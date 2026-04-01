@@ -5,28 +5,41 @@
     <title>Gestor de Números</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             max-width: 600px;
             margin: 40px auto;
             text-align: center;
         }
+
         input, button {
             padding: 10px;
             margin: 5px;
         }
+
         #mensagem {
             color: red;
             font-weight: bold;
         }
+
         ul {
             list-style: none;
             padding: 0;
         }
+
         li {
             background: #f0f0f0;
             margin: 5px;
-            padding: 5px;
+            padding: 8px;
         }
+
+        .maior {
+            background-color: lightgreen;
+        }
+
+        .menor {
+            background-color: lightblue;
+        }
+
         #resultados {
             margin-top: 20px;
             font-weight: bold;
@@ -34,7 +47,7 @@
     </style>
 </head>
 <body>
-        <nav> 
+     <nav> 
     <a href="index.html">Home</a>
     <a href="hobby.html">Hobbies</a>
     <br>
@@ -54,6 +67,7 @@
 
     <button onclick="adicionar()">Adicionar</button>
     <button onclick="calcular()">Calcular</button>
+    <button onclick="ordenar()">Ordenar</button>
     <button onclick="limpar()">Limpar</button>
 
     <p id="mensagem"></p>
@@ -73,7 +87,6 @@
 
             mensagem.textContent = "";
 
-            // validação
             if (valor === "" || isNaN(valor)) {
                 mensagem.textContent = "Por favor insere um número válido.";
                 return;
@@ -81,7 +94,6 @@
 
             let num = Number(valor);
 
-            // verificar duplicados
             for (let i = 0; i < numeros.length; i++) {
                 if (numeros[i] === num) {
                     mensagem.textContent = "Esse número já foi adicionado.";
@@ -98,11 +110,45 @@
             let lista = document.getElementById("lista");
             lista.innerHTML = "";
 
+            if (numeros.length === 0) return;
+
+            let maior = Math.max(...numeros);
+            let menor = Math.min(...numeros);
+
             for (let i = 0; i < numeros.length; i++) {
                 let li = document.createElement("li");
-                li.textContent = numeros[i];
+
+                li.textContent = `Índice ${i}: ${numeros[i]} `;
+
+                // destacar maior e menor
+                if (numeros[i] === maior) {
+                    li.classList.add("maior");
+                } else if (numeros[i] === menor) {
+                    li.classList.add("menor");
+                }
+
+                // botão remover
+                let btn = document.createElement("button");
+                btn.textContent = "Remover";
+                btn.onclick = function() {
+                    remover(i);
+                };
+
+                li.appendChild(btn);
                 lista.appendChild(li);
             }
+        }
+
+        function remover(indice) {
+            numeros.splice(indice, 1);
+            atualizarLista();
+        }
+
+        function ordenar() {
+            numeros.sort(function(a, b) {
+                return a - b;
+            });
+            atualizarLista();
         }
 
         function calcular() {
@@ -120,16 +166,19 @@
             let soma = 0;
             let maior = numeros[0];
             let menor = numeros[0];
+            let pares = 0;
+            let impares = 0;
 
             for (let i = 0; i < numeros.length; i++) {
                 soma += numeros[i];
 
-                if (numeros[i] > maior) {
-                    maior = numeros[i];
-                }
+                if (numeros[i] > maior) maior = numeros[i];
+                if (numeros[i] < menor) menor = numeros[i];
 
-                if (numeros[i] < menor) {
-                    menor = numeros[i];
+                if (numeros[i] % 2 === 0) {
+                    pares++;
+                } else {
+                    impares++;
                 }
             }
 
@@ -140,7 +189,9 @@
                 Soma: ${soma} <br>
                 Média: ${media.toFixed(2)} <br>
                 Maior número: ${maior} <br>
-                Menor número: ${menor}
+                Menor número: ${menor} <br>
+                Pares: ${pares} <br>
+                Ímpares: ${impares}
             `;
         }
 
@@ -154,3 +205,4 @@
 
 </body>
 </html>
+   
