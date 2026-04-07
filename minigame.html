@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Click the Target Game</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: white;
+    }
+
+    #gameArea {
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      background: #333;
+      position: relative;
+      border: 2px solid #fff;
+    }
+
+    #target {
+      width: 40px;
+      height: 40px;
+      background: red;
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Click the Target!</h1>
+  <p>Score: <span id="score">0</span></p>
+  <p>Time: <span id="time">10</span>s</p>
+  <button onclick="startGame()">Start Game</button>
+
+  <div id="gameArea">
+    <div id="target"></div>
+  </div>
+
+  <script>
+    let score = 0;
+    let timeLeft = 10;
+    let gameInterval;
+    let timerInterval;
+
+    const target = document.getElementById("target");
+    const gameArea = document.getElementById("gameArea");
+
+    function moveTarget() {
+      const maxX = gameArea.clientWidth - target.clientWidth;
+      const maxY = gameArea.clientHeight - target.clientHeight;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      target.style.left = x + "px";
+      target.style.top = y + "px";
+    }
+
+    target.onclick = function () {
+      score++;
+      document.getElementById("score").textContent = score;
+      moveTarget();
+    };
+
+    function startGame() {
+      score = 0;
+      timeLeft = 10;
+      document.getElementById("score").textContent = score;
+      document.getElementById("time").textContent = timeLeft;
+
+      moveTarget();
+
+      clearInterval(gameInterval);
+      clearInterval(timerInterval);
+
+      gameInterval = setInterval(moveTarget, 800);
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("time").textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(gameInterval);
+          clearInterval(timerInterval);
+          alert("Game Over! Your score: " + score);
+        }
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
